@@ -15,7 +15,7 @@ test('delivery only targets unpaid opted-in viewers and daily claims suppress du
   }};return q},async rpc(name,args){assert.equal(name,'flex_claim_reminder');const key=JSON.stringify(args);if(claims.has(key))return {data:false};claims.add(key);return {data:true}}};
   const deliver=async(_,subscriptions,payload)=>{received.push(payload.data.userId);assert.equal(subscriptions.length,1);assert.equal(payload.body.includes('Rp'),false);return {sent:1,failed:0}};
   const first=await processReminders(db,{date:'2026-11-02',deliver});
-  assert.deepEqual(received,['rainer','bima']);assert.equal(first.notified,2);assert.equal(first.skipped,1);assert.deepEqual(logged,['sent','sent']);
+  assert.deepEqual(received,['rainer','bima']);assert.equal(first.notified,3);assert.equal(first.skipped,0);assert.deepEqual(logged,['sent','sent','sent']);
   const again=await processReminders(db,{date:'2026-11-02',deliver});assert.equal(again.notified,0);assert.equal(received.length,2);
 });
 

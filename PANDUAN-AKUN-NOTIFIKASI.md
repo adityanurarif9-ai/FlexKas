@@ -86,13 +86,13 @@ Pada HP masing-masing anggota:
 
 1. Buka `https://kas-flexbox.vercel.app`, pasang ke layar utama, lalu buka ikon FlexKas.
 2. Masuk dengan akunnya sendiri.
-3. Buka tombol akun di pojok → **Aktifkan notifikasi HP**, lalu izinkan permintaan sistem.
-4. Tekan **Tes notifikasi saya**. Tes dibatasi satu kali per 60 detik.
-5. Jika diinginkan, aktifkan **Suara pengingat saat aplikasi terbuka**.
+3. Buka **Notifikasi** di navbar → **Izinkan notifikasi HP**, lalu izinkan permintaan sistem.
+4. Minta Fakhri membuka **Iuran Tim → Tes pengingat** pada baris akunmu. Tes dibatasi satu kali per akun tujuan per 60 detik dan tetap dapat diterima saat sudah lunas.
+5. Ketuk aplikasi agar browser mengizinkan suara. Suara singkat berjalan saat pesan baru muncul, setelah ada interaksi pengguna.
 
 iPhone membutuhkan iOS 16.4 atau lebih baru, pemasangan ke layar utama, dan ketukan pengguna untuk meminta izin. Di Safari biasa, pasang dahulu melalui Bagikan → Tambahkan ke Layar Utama. Pengaturan Focus, senyap, baterai, internet, serta kebijakan browser dapat menunda atau membisukan notifikasi. Suara khusus hanya berjalan ketika aplikasi terbuka dan sudah berinteraksi; saat tertutup suara mengikuti pengaturan HP. Ini pengingat, bukan alarm jam yang dijamin berbunyi.
 
-Jadwal Vercel di `vercel.json` meminta pengingat harian pukul 11:00 UTC / 18:00 WIB. Pada paket Hobby waktu eksekusi bisa bergeser dalam satu jam; jangan mengandalkan menit yang tepat. Fakhri juga dapat menekan **Kirim pengingat yang belum lunas**. Hanya empat akun anggota yang belum melunasi **minggu berjalan**, memiliki perangkat terdaftar, dan belum diberi pengingat pada hari Jakarta yang sama yang dituju. Maksimal satu pengiriman berhasil per anggota + minggu + hari; tes pribadi terpisah. Tidak ada notifikasi ke nomor HP atau email, dan tidak ada permintaan izin otomatis saat membuka halaman.
+Jadwal Vercel di `vercel.json` meminta pengingat harian pukul 11:00 UTC / 18:00 WIB. Pada paket Hobby waktu eksekusi bisa bergeser dalam satu jam; jangan mengandalkan menit yang tepat. Fakhri juga dapat menekan **Ingatkan yang belum lunas** atau **Ingatkan** pada baris tiap orang di Iuran Tim. Hanya empat akun anggota yang belum melunasi **minggu berjalan**, memiliki perangkat terdaftar, dan belum diberi pengingat pada hari Jakarta yang sama yang dituju. Maksimal satu pengiriman berhasil per anggota + minggu + hari; tes pribadi terpisah. Tidak ada notifikasi ke nomor HP atau email, dan tidak ada permintaan izin otomatis saat membuka halaman.
 
 Nama dan nominal tidak ditampilkan pada notifikasi layar kunci. Rincian dilihat setelah membuka aplikasi dan login. Keluar akun mematikan langganan perangkat; akun lain pada HP yang sama perlu mengaktifkan notifikasi lagi.
 
@@ -117,3 +117,6 @@ Ganti nama terakhir sesuai akun. Skrip mencari UUID dari pemetaan profil teperca
 Jangan menjalankan skrip akun/reset menggunakan kunci proyek SakuPintar. Untuk pekerjaan lokal, `npm run dev` mendukung login dan kas Supabase; push/API jadwal perlu lingkungan Vercel produksi.
 
 Referensi: [Supabase admin createUser](https://supabase.com/docs/reference/javascript/auth-admin-createuser), [Supabase RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Web Push iPhone](https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/), [jadwal Vercel Hobby](https://vercel.com/docs/cron-jobs/usage-and-pricing).
+
+
+Pembaruan kotak Notifikasi: tidak perlu mengulang SQL atau mengganti kunci. Pesan biasa dibaca dari riwayat pengingat yang sudah tersedia dan disembunyikan setelah minggu terkait lunas. Status `sent` kini berarti pesan tersimpan di kotak masuk; keberhasilan push ke perangkat dihitung terpisah. Anggota tanpa izin push tetap dapat membaca kotak masuk. Pesan uji terakhir tetap tampil meskipun lunas. Penglihat tidak dapat mengirim atau mengatur pengingat; izin notifikasi perangkat diberikan sendiri lewat halaman Notifikasi.

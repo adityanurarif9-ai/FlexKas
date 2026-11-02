@@ -40,25 +40,34 @@ export async function sendToSubscriptions(db,subscriptions,payload,{send=webpush
   }
   return {sent,failed};
 }
-export async function processReminders(db,{date=jakartaDate(),deliver=sendToSubscriptions}={}){
-  if(deliver===sendToSubscriptions)pushOptions();
+export async function processReminders(db,{date=jakartaDate(),deliver=sendToSubscriptions,memberKey=null,periodId=null}={}){
   const wallet=await db.from('flex_wallet').select('state').eq('singleton',true).single();
   const profiles=await db.from('flex_profiles').select('user_id,member_key');
   if(wallet.error||profiles.error)throw new Error('Kas tim belum bisa dimuat untuk pengingat.');
-  const rows=profiles.data.map(p=>({...p,access_role:p.member_key==='fakhri'?'admin':'viewer'}));
-  const targets=reminderTargets(wallet.data.state,rows,date);let notified=0,devices=0,skipped=0,failed=0;
+  if(periodId){
+    const period=wallet.data.state.duesPeriods.find(p=>p.id===periodId);
+    if(!period)throw Object.assign(new Error('Minggu iuran tidak ditemukan.'),{status:400});
+    if(period.start>date)throw Object.assign(new Error('Minggu ini belum jatuh tempo. Gunakan Tes pengingat untuk pengecekan.'),{status:409});
+  }
+  if(memberKey&&!profiles.data.some(p=>p.member_key===memberKey))throw Object.assign(new Error('Akun tujuan belum tersedia.'),{status:409});
+  const rows=profiles.data.filter(p=>!memberKey||p.member_key===memberKey).map(p=>({...p,access_role:p.member_key==='fakhri'?'admin':'viewer'}));
+  const targets=reminderTargets(wallet.data.state,rows,date,periodId);let notified=0,devices=0,skipped=0,failed=0,withoutDevice=0;
   for(const {profile,due} of targets){
-    const subscriptions=await db.from('flex_push_subscriptions').select('id,endpoint,p256dh,auth').eq('user_id',profile.user_id);
-    if(subscriptions.error)throw new Error('Daftar perangkat belum bisa dimuat.');
-    if(!subscriptions.data.length){skipped++;continue}
     const claim=await db.rpc('flex_claim_reminder',{p_user_id:profile.user_id,p_period_id:due.period.id,p_day:date});
     if(claim.error)throw new Error('Jadwal pengingat belum bisa diproses.');
     if(!claim.data){skipped++;continue}
-    const result=await deliver(db,subscriptions.data,{title:'Pengingat iuran FlexKas',body:'Iuran minggu ini belum lunas. Buka FlexKas untuk melihat detailnya.',tag:'flexkas-dues-'+due.period.id,data:{url:'/?page=dues',userId:profile.user_id,periodId:due.period.id}});
-    const logged=await db.from('flex_reminder_deliveries').update({status:result.sent?'sent':'failed',updated_at:new Date().toISOString()}).eq('user_id',profile.user_id).eq('period_id',due.period.id).eq('day_jakarta',date);
-    if(logged.error)throw new Error('Status pengingat belum dapat disimpan.');
-    if(result.sent)notified++;devices+=result.sent;failed+=result.failed;
+    // Existing delivery history is also the durable in-app inbox. Push is optional.
+    const logged=await db.from('flex_reminder_deliveries').update({status:'sent',updated_at:new Date().toISOString()}).eq('user_id',profile.user_id).eq('period_id',due.period.id).eq('day_jakarta',date);
+    if(logged.error)throw new Error('Notifikasi belum dapat disimpan.');
+    notified++;
+    const subscriptions=await db.from('flex_push_subscriptions').select('id,endpoint,p256dh,auth').eq('user_id',profile.user_id);
+    if(subscriptions.error){failed++;continue}
+    if(!subscriptions.data.length){withoutDevice++;continue}
+    try{
+      const result=await deliver(db,subscriptions.data,{title:'Pengingat iuran FlexKas',body:'Iuran belum lunas. Buka FlexKas untuk melihat detailnya.',tag:'flexkas-dues-'+due.period.id,data:{url:'/?page=notifications',userId:profile.user_id,periodId:due.period.id,kind:'dues'}});
+      devices+=result.sent;failed+=result.failed;
+    }catch{failed+=subscriptions.data.length}
   }
-  return {eligible:targets.length,notified,devices,skipped,failed};
+  return {eligible:targets.length,notified,devices,skipped,failed,withoutDevice};
 }
 export function respondError(res,error){return res.status(error.status||500).json({error:error.status?error.message:'Layanan pengingat belum berhasil. Coba lagi nanti.'})}

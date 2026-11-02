@@ -31,10 +31,10 @@ export async function changePassword(email,current,password,confirmation){
   const verified=await cloud.auth.signInWithPassword({email,password:current});if(verified.error)throw verified.error;
   const {error}=await cloud.auth.updateUser({password});if(error)throw error;
 }
-export async function apiRequest(path,method='POST'){
+export async function apiRequest(path,method='POST',body={}){
   const {data,error}=await cloud.auth.getSession();if(error)throw error;
   if(!data.session)throw new Error('Masuk kembali untuk melanjutkan.');
-  const response=await fetch(path,{method,headers:{Authorization:`Bearer ${data.session.access_token}`,'Content-Type':'application/json'},body:method==='POST'?'{}':undefined,cache:'no-store'});
+  const response=await fetch(path,{method,headers:{Authorization:`Bearer ${data.session.access_token}`,'Content-Type':'application/json'},body:method==='POST'?JSON.stringify(body):undefined,cache:'no-store'});
   let result;try{result=await response.json()}catch{throw new Error('Layanan pengingat belum tersedia di alamat ini. Gunakan aplikasi Vercel.')}
   if(!response.ok)throw new Error(result.error||'Layanan pengingat belum berhasil.');return result;
 }

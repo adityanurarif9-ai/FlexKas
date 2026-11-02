@@ -31,7 +31,7 @@ Impor repo `adityanurarif9-ai/FlexKas` ke Vercel. Framework: Vite; build: `npm r
 
 Data kas disimpan pada satu database bersama. Server menolak perubahan dari akun penonton dan penyimpanan dengan versi lama. Tidak ada riwayat keuangan asli atau password bawaan di repository. Saldo dimulai nol; Fakhri meninjau lalu mengimpor Excel sekali untuk seluruh tim. Arsip localStorage versi lama tetap di perangkat dan hanya dapat dimuat setelah Fakhri login serta meninjaunya.
 
-Pengingat menggunakan Web Push dengan izin pada setiap HP. Kode API, jadwal harian Vercel, VAPID, dan pendaftaran perangkat sudah tersedia; perlu konfigurasi server untuk mengaktifkannya. Anggota yang lunas dan Fakhri tidak menerima pengingat tunggakan. Suara khusus opsional hanya saat aplikasi terbuka; suara latar belakang mengikuti pengaturan HP. Akun dapat mengganti password sendiri; pemulihan dilakukan owner karena alamat login tidak memiliki kotak email.
+Pengingat menggunakan Web Push dengan izin pada setiap HP. Kode API, jadwal harian Vercel, VAPID, dan pendaftaran perangkat sudah tersedia; perlu konfigurasi server untuk mengaktifkannya. Anggota yang lunas dan Fakhri tidak menerima pengingat tunggakan. Suara khusus hanya saat aplikasi terbuka; suara latar belakang mengikuti pengaturan HP. Akun dapat mengganti password sendiri; pemulihan dilakukan owner karena alamat login tidak memiliki kotak email.
 
 PWA menyimpan shell aplikasi untuk dibuka kembali, tetapi kas tidak dapat dimuat atau diubah tanpa internet dan sesi akun yang sah. Tidak ada file APK.
 
@@ -74,3 +74,11 @@ Alamat produksi: https://kas-flexbox.vercel.app/. Pemasangan tetap memerlukan HT
 - Satu pembayaran dipecah menjadi rincian per minggu dengan penanda pembayaran yang sama, disimpan dalam satu permintaan dengan pemeriksaan versi. Total rincian menambah kas satu kali; tidak ada transaksi ringkasan tambahan. Perubahan atau penghapusan dilakukan pada rincian minggu yang bersangkutan. Lebih bayar lama tidak otomatis dipindahkan ke minggu lain.
 - Rekap sisa target tahunan mencakup minggu mendatang, sehingga berbeda dari tunggakan yang sudah jatuh tempo.
 - Jabatan **Kiandra: Keamanan**, **Bima: Kreatif**. Keduanya tetap akun lihat saja. Label database proyek lama dapat diperbarui melalui `supabase/002_team_display_roles.sql`; tidak mengubah izin, identitas anggota, atau catatan kas.
+
+## Pengingat per orang dan kotak Notifikasi
+
+- **Iuran Tim**: hanya Fakhri yang memiliki **Ingatkan** untuk anggota belum lunas dan **Tes pengingat** per orang. Pengingat biasa dibatasi satu kali per akun + minggu + hari Jakarta. Minggu mendatang tidak ditagih. Tes dibatasi satu kali per akun tujuan per menit dan tetap tersedia untuk anggota yang sudah lunas; pesan ditandai sebagai tes.
+- **Notifikasi** di navbar tersedia untuk setiap akun. Pesan hanya dapat diambil oleh pemilik akun yang sudah login; jumlah belum dibaca muncul pada badge. Tanda dibaca disimpan per akun pada perangkat tersebut. Kotak masuk dimuat ulang setiap 15 detik saat aplikasi terlihat dan saat menerima push.
+- Riwayat pengingat yang sudah ada (`flex_reminder_deliveries`) menjadi sumber pesan biasa; `sent` berarti tersimpan di kotak masuk, bukan jaminan HP membunyikannya. Pesan tetap tersedia tanpa langganan push. API mengembalikan jumlah perangkat yang benar-benar menerima pengiriman secara terpisah. Tes terakhir berasal dari waktu pada `flex_push_test_limits`. Tidak perlu tabel, migrasi, atau kunci baru.
+- Setelah minggu terkait lunas, pesan biasa dan badge disaring di server dan aplikasi. Notifikasi sistem yang masih tampil dapat ditutup oleh aplikasi saat status pembayaran akun tersebut tersinkron. Pesan tes tetap ditampilkan untuk pengecekan.
+- Akun penglihat tidak memiliki kontrol pengiriman, tes, atau jadwal pengingat. Mereka hanya menerima pesan dan memberi **izin notifikasi pada perangkatnya sendiri** melalui halaman Notifikasi. Izin HP tidak dapat diberikan oleh Fakhri dari jarak jauh. Suara singkat dalam aplikasi berjalan saat ada pesan baru yang belum dibaca dan setelah interaksi pengguna; suara ketika aplikasi tertutup mengikuti pengaturan HP. Tidak ada alarm jam yang dijamin berbunyi.

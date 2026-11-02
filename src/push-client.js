@@ -27,18 +27,12 @@ export async function disablePush(client){
   if(sub){await sub.unsubscribe();await client.from('flex_push_subscriptions').delete().eq('endpoint',sub.endpoint)}
   try{localStorage.removeItem('flexkas:push-user')}catch{}
 }
-export const testPush=()=>apiRequest('/api/push-test');
-export const sendReminders=()=>apiRequest('/api/reminders');
+export const testPush=memberKey=>apiRequest('/api/push-test','POST',memberKey?{memberKey}:{});
+export const sendReminders=(memberKey,periodId)=>apiRequest('/api/reminders','POST',{...(memberKey?{memberKey}:{}),...(periodId?{periodId}:{})});
 export function pushState(profile){return typeof Notification!=='undefined'&&Notification.permission==='granted'&&boundUser()===profile?.user_id}
 
 let audio=null,lastTone=0;
-function soundPreference(profile){try{return localStorage.getItem('flexkas:sound:'+profile.user_id)==='yes'}catch{return false}}
-export async function setReminderSound(profile,enabled){
-  if(enabled){const Context=window.AudioContext||window.webkitAudioContext;if(!Context)throw new Error('Browser ini belum mendukung suara pengingat.');audio ||= new Context();await audio.resume()}
-  try{localStorage.setItem('flexkas:sound:'+profile.user_id,enabled?'yes':'no')}catch{}
-  if(enabled)playReminderSound(profile,true);
-}
-export function reminderSoundEnabled(profile){return soundPreference(profile)}
+function soundPreference(profile){return profile?.access_role==='viewer'}
 export function unlockReminderSound(profile){
   if(!soundPreference(profile))return;
   const Context=window.AudioContext||window.webkitAudioContext;

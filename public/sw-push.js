@@ -18,3 +18,11 @@ self.addEventListener('notificationclick',event=>{
     return self.clients.openWindow(target.href);
   }));
 });
+// An open client can retire already-shown dues alerts after its own payment syncs.
+self.addEventListener('message',event=>{
+  if(event.data?.type!=='FLEXKAS_CLEAR_PAID'||!Array.isArray(event.data.periodIds)||typeof self.registration.getNotifications!=='function')return;
+  const {userId,periodIds}=event.data;
+  event.waitUntil(self.registration.getNotifications().then(rows=>rows.forEach(notification=>{
+    if(notification.data?.userId===userId&&notification.data?.kind!=='test'&&periodIds.includes(notification.data?.periodId))notification.close();
+  })));
+});
