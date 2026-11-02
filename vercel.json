@@ -73,6 +73,21 @@
           "key": "Cache-Control"
         }
       ]
+    },
+    {
+      "source": "/sw-push.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/reminders",
+      "schedule": "0 11 * * *"
     }
   ]
 }

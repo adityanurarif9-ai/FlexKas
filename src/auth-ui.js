@@ -1,0 +1,17 @@
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+export function showLoading(root,message='Memuat kas tim…'){
+  root.innerHTML=`<div class="auth-loading" role="status"><img src="/assets/flexkas-icon-192.png" alt="FlexKas"><span class="loading-ring"></span><p>${esc(message)}</p></div>`;
+}
+export function showLogin(root,{configured,error='',busy=false,onSubmit,onInstall,onRetry}){
+  root.innerHTML=`<div class="auth-frame"><aside class="auth-story"><img class="auth-story-logo" src="/assets/flexkas-logo.svg" alt="FlexKas"><div><span class="auth-story-caption">FLEXBOX TEAM FINANCE</span><h1>Kas bersama.<br>Tanggung jawab bersama.</h1><p>Catatan kas dan iuran tim, dalam satu tempat.</p><img class="auth-story-icon" src="/assets/flexkas-icon-512.png" alt="Dompet FlexKas"></div><small>Leader · Wakil · Bendahara · Anggota</small></aside><main class="auth-main"><a class="auth-mobile-logo" href="/" aria-label="FlexKas"><img src="/assets/flexkas-logo.svg" alt="FlexKas"></a><div class="auth-card"><p class="eyebrow">RUANG TIM FLEXBOX</p><h1>Masuk ke FlexKas</h1><p class="subtitle">Lihat kas dan status iuranmu dengan akun tim.</p>${!configured?'<div class="auth-notice">Akun tim belum diaktifkan. Pengelola perlu menghubungkan Supabase terlebih dahulu.</div>':''}<form id="login-form"><label class="field">Akun tim<input name="email" type="email" required autocomplete="username" placeholder="adit@flexboxstudio.site" autocapitalize="none" spellcheck="false"></label><label class="field">Password<div class="password-field"><input name="password" type="password" required autocomplete="current-password" placeholder="Masukkan password"><button type="button" id="toggle-password">Lihat</button></div></label><p id="login-error" class="${error?'error':''}" role="alert">${esc(error)}</p><button class="btn primary auth-submit" type="submit" ${busy||!configured?'disabled':''}>${busy?'Sedang masuk…':'Masuk ke akun'}</button></form><p class="auth-help">Belum punya password atau lupa password? Hubungi pengelola akun. Alamat akun ini digunakan sebagai nama login, bukan kotak email.</p><div class="auth-access-note"><strong>Hak akses tim</strong><span>Fakhri mengelola kas. Adit, Rainer, Kiandra, dan Bima melihat catatan serta status iuran.</span></div><button class="text-btn" id="login-install">Pasang FlexKas di layar utama</button>${onRetry?'<button class="text-btn" id="login-retry">Coba sambungkan ulang</button>':''}</div><p class="auth-footer">Flexbox · Satu tim. Satu kas.</p></main></div>`;
+  const form=root.querySelector('#login-form');
+  root.querySelector('#toggle-password').onclick=()=>{const input=form.elements.password;input.type=input.type==='password'?'text':'password';root.querySelector('#toggle-password').textContent=input.type==='password'?'Lihat':'Sembunyikan'};
+  root.querySelector('#login-install').onclick=onInstall;
+  root.querySelector('#login-retry')?.addEventListener('click',onRetry);
+  form.onsubmit=async event=>{
+    event.preventDefault();if(!configured)return;
+    const button=form.querySelector('button[type=submit]'),message=root.querySelector('#login-error');
+    button.disabled=true;button.textContent='Sedang masuk…';message.textContent='';message.className='';
+    try{await onSubmit(form.elements.email.value,form.elements.password.value)}catch(error){message.className='error';message.textContent=error.message;button.disabled=false;button.textContent='Masuk ke akun'}
+  };
+}
