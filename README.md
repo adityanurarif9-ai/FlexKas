@@ -53,3 +53,11 @@ Status iuran memakai **tahun + nomor minggu** dari transaksi, bukan tanggal pemb
 Impor mengganti dataset di perangkat, bukan menambahkan duplikat. Cadangan data sebelum impor disimpan lokal dan dapat dipulihkan melalui panel impor. Data kas lain yang ingin disimpan sebaiknya diunduh sebagai cadangan sebelum impor. Di perangkat lain, lakukan impor file sendiri; belum ada sinkronisasi tim.
 
 Development dan preview memakai alamat tetap **http://127.0.0.1:5194/** agar data lokal tetap terlihat saat berpindah antara keduanya. Jalankan satu server saja. `npm test` menguji alokasi mingguan, cicilan, tahun pergantian, dan penolakan data tidak lengkap/tidak cocok.
+
+## Ajakan instal saat pertama masuk
+
+Pada kunjungan pertama melalui browser HP, FlexKas menampilkan ajakan pemasangan otomatis. Tombol Instal sekarang hanya memicu dialog sistem setelah diketuk dan setelah browser mengirim beforeinstallprompt. Jika belum tersedia, pengguna mendapat petunjuk pemasangan; iPhone memakai menu Bagikan → Tambahkan ke Layar Utama. Browser dalam aplikasi diberi petunjuk untuk membuka Chrome/Safari.
+
+Nanti saja, tombol tutup, dan Escape menunda promosi selama tujuh hari pada browser tersebut. Penawaran muncul paling banyak sekali per kunjungan, tidak menimpa formulir yang sedang terbuka, serta disembunyikan dalam mode aplikasi terpasang. Setelah appinstalled, petunjuk pemasangan disembunyikan dengan penanda lokal; event beforeinstallprompt baru membatalkan penanda tersebut bila aplikasi dapat dipasang kembali. Preferensi instal terpisah dari penyimpanan kas.
+
+Alamat produksi: https://kas-flexbox.vercel.app/. Pemasangan tetap memerlukan HTTPS atau localhost. Perilaku dialog bawaan ditentukan oleh browser; aplikasi tidak dapat memaksanya muncul tanpa ketukan.

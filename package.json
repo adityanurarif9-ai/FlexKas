@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1 --port 5194 --strictPort",
     "build": "node scripts/build-icons.mjs && vite build && node scripts/build-sw.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 5194 --strictPort",
-    "test": "node --test tests/cash-import.mjs tests/team.mjs",
+    "test": "node --test tests/cash-import.mjs tests/team.mjs tests/install.mjs",
     "icons": "node scripts/build-icons.mjs"
   },
   "devDependencies": {
