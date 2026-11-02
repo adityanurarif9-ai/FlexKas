@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {PGlite} from '@electric-sql/pglite';
+import {createDuesPayment,monthPeriods} from '../src/dues-payment.js';
 
 test('database enforces admin, identity, version conflicts, subscription isolation and reminder claims',async()=>{
   const db=new PGlite();
@@ -33,6 +34,12 @@ test('database enforces admin, identity, version conflicts, subscription isolati
     await assert.rejects(db.query('select flex_save_wallet($1::jsonb,0)',[JSON.stringify(state)]),/Kas sudah berubah/);
     await assert.rejects(db.query('select flex_save_wallet($1::jsonb,1)',[JSON.stringify({...state,members:state.members.slice(1)})]),/Jumlah data/);
     await assert.rejects(db.query('select flex_save_wallet($1::jsonb,1)',[JSON.stringify({...state,transactions:[{id:'e',type:'expense',title:'Expense',amount:5000,date:'2026-11-02'}]})]),/negatif/);
+    let counter=0;
+    const batch=createDuesPayment(state,{memberId:'flexbox-adit',periodIds:monthPeriods(state,'2026-11').map(p=>p.id),date:'2026-11-02'},()=>`batch-${++counter}`);
+    const paid=(await db.query('select flex_save_wallet($1::jsonb,1) as s',[JSON.stringify(batch.state)])).rows[0].s;
+    assert.equal(paid.state.transactions.length,4);assert.equal(paid.state.transactions.reduce((sum,t)=>sum+t.amount,0),20000);assert.equal(paid.revision,2);
+    await assert.rejects(db.query('select flex_save_wallet($1::jsonb,1)',[JSON.stringify(batch.state)]),/Kas sudah berubah/);
+    assert.equal((await db.query('select flex_snapshot() as s')).rows[0].s.state.transactions.length,4);
     await asUser('adit');
     await db.query('insert into flex_push_subscriptions(user_id,endpoint,p256dh,auth) values($1,$2,$3,$4)',[users.adit,'https://fcm.googleapis.com/test', 'k'.repeat(87),'a'.repeat(22)]);
     await assert.rejects(db.query('insert into flex_push_subscriptions(user_id,endpoint,p256dh,auth) values($1,$2,$3,$4)',[users.fakhri,'https://fcm.googleapis.com/other','k'.repeat(87),'a'.repeat(22)]),/row-level security/);

@@ -79,7 +79,7 @@ export function parseCashWorkbook(kas, payments) {
   if (opening + income - expense < 0) throw new Error('Saldo akhir negatif. Periksa pemasukan dan pengeluaran di Excel.');
   const selectedDuesPeriod = weekKey(Number(kas.E7), Number(kas.B7));
   if (!periods.some(p => p.id === selectedDuesPeriod)) throw new Error('Periode terpilih di Excel tidak valid.');
-  return { demo: false, teamRosterVersion: 1, monthlyDues: amount, weeklyDues: amount, duesFrequency: 'weekly', openingBalance: opening,
+  return { demo: false, teamRosterVersion: 2, monthlyDues: amount, weeklyDues: amount, duesFrequency: 'weekly', openingBalance: opening,
     duesPeriods: periods, selectedDuesPeriod, members, transactions,
     importSummary: { income, expense, balance: opening + income - expense, source: 'Kas Tim / Catatan Pembayaran' } };
 }

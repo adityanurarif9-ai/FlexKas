@@ -65,3 +65,12 @@ Pada kunjungan pertama melalui browser HP, FlexKas menampilkan ajakan pemasangan
 Nanti saja, tombol tutup, dan Escape menunda promosi selama tujuh hari pada browser tersebut. Penawaran muncul paling banyak sekali per kunjungan, tidak menimpa formulir yang sedang terbuka, serta disembunyikan dalam mode aplikasi terpasang. Setelah appinstalled, petunjuk pemasangan disembunyikan dengan penanda lokal; event beforeinstallprompt baru membatalkan penanda tersebut bila aplikasi dapat dipasang kembali. Preferensi instal terpisah dari penyimpanan kas.
 
 Alamat produksi: https://kas-flexbox.vercel.app/. Pemasangan tetap memerlukan HTTPS atau localhost. Perilaku dialog bawaan ditentukan oleh browser; aplikasi tidak dapat memaksanya muncul tanpa ketukan.
+
+## Rekap tahunan dan pembayaran sekaligus
+
+- Buka **Laporan → Tahunan**, pilih tahun untuk saldo awal/akhir, total pemasukan/pengeluaran, grafik 12 bulan, rincian per bulan, dan rekap iuran per orang. **Ekspor rekap CSV** berisi ringkasan dan rekap iuran; **Transaksi CSV** berisi seluruh transaksi pada tahun terpilih. CSV dapat dibuka di Excel, dan Cetak tersedia untuk arsip.
+- Saldo awal tahun mencakup saldo pembukaan ditambah seluruh transaksi sebelum tahun tersebut. Arus kas mengikuti tanggal pembayaran sebenarnya. Rekap iuran mengikuti tahun minggu tujuannya, sehingga bayar di muka pada Desember untuk Januari tidak salah dianggap pemasukan Januari.
+- Fakhri membuka **Iuran Tim → Bayar 1 bulan / sekaligus**, memilih anggota, bulan kalender atau beberapa minggu, lalu tanggal pembayaran sebenarnya. Paket satu bulan mengikuti Jumat yang mulai pada bulan itu: empat atau lima minggu sesuai kalender. Minggu lunas dilewati; cicilan hanya ditambah sisanya. Tinjau total sebelum menyimpan.
+- Satu pembayaran dipecah menjadi rincian per minggu dengan penanda pembayaran yang sama, disimpan dalam satu permintaan dengan pemeriksaan versi. Total rincian menambah kas satu kali; tidak ada transaksi ringkasan tambahan. Perubahan atau penghapusan dilakukan pada rincian minggu yang bersangkutan. Lebih bayar lama tidak otomatis dipindahkan ke minggu lain.
+- Rekap sisa target tahunan mencakup minggu mendatang, sehingga berbeda dari tunggakan yang sudah jatuh tempo.
+- Jabatan **Kiandra: Keamanan**, **Bima: Kreatif**. Keduanya tetap akun lihat saja. Label database proyek lama dapat diperbarui melalui `supabase/002_team_display_roles.sql`; tidak mengubah izin, identitas anggota, atau catatan kas.

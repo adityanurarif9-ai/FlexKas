@@ -36,8 +36,8 @@ Skrip membuat akun terkonfirmasi tanpa mengirim email, lalu menghubungkannya ke 
 | fakhri@flexboxstudio.site | Bendahara | Admin, mengubah kas |
 | adit@flexboxstudio.site | Leader | Melihat saja |
 | rainer@flexboxstudio.site | Wakil Leader | Melihat saja |
-| kiandra@flexboxstudio.site | Anggota | Melihat saja |
-| bima@flexboxstudio.site | Anggota | Melihat saja |
+| kiandra@flexboxstudio.site | Keamanan | Melihat saja |
+| bima@flexboxstudio.site | Kreatif | Melihat saja |
 
 Password acak masing-masing disimpan dalam file privat di `.local-data/akun-flexkas-....txt`. Terminal hanya menampilkan lokasi file. Bagikan setiap password hanya ke pemiliknya melalui saluran pribadi, kemudian minta menggantinya melalui **Akun → Ganti password**. Alamat-alamat tersebut merupakan nama login, tidak membutuhkan kotak email dan tidak dipakai untuk verifikasi atau pemulihan email.
 

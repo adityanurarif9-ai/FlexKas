@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TEAM, initialTeam, applyTeamRoles, prepareTeamState, teamRole } from '../src/team.js';
 test('new browsers start with the real roster, weekly dues and no fabricated cash',()=>{
-  const s=initialTeam();assert.deepEqual(s.members.map(m=>[m.name,m.role]),[['Adit','Leader'],['Rainer','Wakil Leader'],['Kiandra','Anggota'],['Bima','Anggota'],['Fakhri','Bendahara']]);
+  const s=initialTeam();assert.deepEqual(s.members.map(m=>[m.name,m.role]),[['Adit','Leader'],['Rainer','Wakil Leader'],['Kiandra','Keamanan'],['Bima','Kreatif'],['Fakhri','Bendahara']]);
   assert.equal(s.transactions.length,0);assert.equal(s.openingBalance,0);assert.equal(s.weeklyDues,5000);assert.equal(s.duesPeriods.length,63);
   assert.equal(teamRole(' fakhri '),'Bendahara');assert.equal(teamRole('Rainer'),'Wakil Leader');
 });

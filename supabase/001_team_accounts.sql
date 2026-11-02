@@ -11,8 +11,8 @@ create table if not exists public.flex_members (
 insert into public.flex_members values
  ('adit','Adit','adit@flexboxstudio.site','Leader','viewer'),
  ('rainer','Rainer','rainer@flexboxstudio.site','Wakil Leader','viewer'),
- ('kiandra','Kiandra','kiandra@flexboxstudio.site','Anggota','viewer'),
- ('bima','Bima','bima@flexboxstudio.site','Anggota','viewer'),
+ ('kiandra','Kiandra','kiandra@flexboxstudio.site','Keamanan','viewer'),
+ ('bima','Bima','bima@flexboxstudio.site','Kreatif','viewer'),
  ('fakhri','Fakhri','fakhri@flexboxstudio.site','Bendahara','admin')
 on conflict(member_key) do update set display_name=excluded.display_name,login_email=excluded.login_email,display_role=excluded.display_role,access_role=excluded.access_role;
 

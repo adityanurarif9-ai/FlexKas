@@ -2,8 +2,8 @@
 export const TEAM = [
   { id: 'flexbox-adit', name: 'Adit', role: 'Leader' },
   { id: 'flexbox-rainer', name: 'Rainer', role: 'Wakil Leader' },
-  { id: 'flexbox-kiandra', name: 'Kiandra', role: 'Anggota' },
-  { id: 'flexbox-bima', name: 'Bima', role: 'Anggota' },
+  { id: 'flexbox-kiandra', name: 'Kiandra', role: 'Keamanan' },
+  { id: 'flexbox-bima', name: 'Bima', role: 'Kreatif' },
   { id: 'flexbox-fakhri', name: 'Fakhri', role: 'Bendahara' },
 ];
 export function teamRole(name) {
@@ -18,13 +18,13 @@ export function initialTeam() {
       periods.push({ id: `${year}-W${String(week).padStart(2, '0')}`, year, week, start: date, end });
     }
   }
-  return { demo: false, teamRosterVersion: 1, monthlyDues: 5000, weeklyDues: 5000, duesFrequency: 'weekly',
+  return { demo: false, teamRosterVersion: 2, monthlyDues: 5000, weeklyDues: 5000, duesFrequency: 'weekly',
     openingBalance: 0, duesPeriods: periods, selectedDuesPeriod: '2026-W01',
     members: TEAM.map(m => ({ ...m })), transactions: [] };
 }
 export function applyTeamRoles(state) {
-  if (state.teamRosterVersion === 1) return state;
-  return { ...state, teamRosterVersion: 1, members: state.members.map(m =>
+  if (state.teamRosterVersion === 2) return state;
+  return { ...state, teamRosterVersion: 2, members: state.members.map(m =>
     TEAM.some(t => t.name.toLowerCase() === m.name.trim().toLowerCase()) ? { ...m, role: teamRole(m.name) } : m) };
 }
 
