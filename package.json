@@ -4,9 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "dev": "vite --host 127.0.0.1 --port 5194 --strictPort",
     "build": "vite build && node scripts/build-sw.mjs",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1 --port 5194 --strictPort",
+    "test": "node --test tests/cash-import.mjs"
   },
-  "devDependencies": {"vite": "^7.1.0"}
+  "devDependencies": {
+    "vite": "^7.1.0"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3"
+  }
 }

@@ -40,3 +40,15 @@ Pemasangan PWA tidak membuat file APK. Untuk dipakai bersama secara nyata, tahap
 - `scripts/build-sw.mjs`: membuat cache shell offline setelah build.
 
 Proyek ini terpisah dari SakuPintar dan pratinjau Sites sebelumnya. Repository tujuan: https://github.com/adityanurarif9-ai/FlexKas.git
+
+## Impor Excel kas mingguan
+
+Buka **Impor Excel** di beranda atau panel tim, pilih workbook dengan tab **Kas Tim** dan **Catatan Pembayaran**, lalu periksa pratinjau sebelum menekan **Gunakan data Excel ini**. File dibaca di browser, tidak diunggah ke server atau disertakan ke GitHub.
+
+Importer mendukung susunan workbook yang diberikan: lima anggota pada Kas Tim!B11:B15, nominal iuran di D7, saldo awal di G7, jadwal mingguan 2026 (baris 27–36) dan 2027 (baris 49–101), serta catatan pembayaran baris 8–807. Jika susunan berubah, importer menolak dengan keterangan, tanpa menyimpan sebagian data.
+
+Status iuran memakai **tahun + nomor minggu** dari transaksi, bukan tanggal pembayaran. Bayar di muka, cicilan, dan lebih bayar tetap pada minggu yang dipilih. Nomor minggu mengikuti jadwal Excel dan dimulai ulang setiap tahun. Lebih bayar tidak otomatis dialokasikan ke minggu lain. Tanggal transaksi asli tetap dipakai untuk laporan arus kas bulanan. Ringkasan impor divalidasi terhadap total pemasukan, pengeluaran, saldo, dan setoran per anggota di Excel.
+
+Impor mengganti dataset di perangkat, bukan menambahkan duplikat. Cadangan data sebelum impor disimpan lokal dan dapat dipulihkan melalui panel impor. Data kas lain yang ingin disimpan sebaiknya diunduh sebagai cadangan sebelum impor. Di perangkat lain, lakukan impor file sendiri; belum ada sinkronisasi tim.
+
+Development dan preview memakai alamat tetap **http://127.0.0.1:5194/** agar data lokal tetap terlihat saat berpindah antara keduanya. Jalankan satu server saja. `npm test` menguji alokasi mingguan, cicilan, tahun pergantian, dan penolakan data tidak lengkap/tidak cocok.

@@ -6,3 +6,7 @@ dist/
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+
+# Data kas pribadi tidak dimasukkan ke Git
+.local-data/
+*.xlsx
