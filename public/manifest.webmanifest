@@ -1,1 +1,32 @@
-{"id":"/","name":"FlexKas — Kas Tim Flexbox","short_name":"FlexKas","description":"Satu tim, satu kas. Aplikasi kas tim Flexbox.","lang":"id","start_url":"/","scope":"/","display":"standalone","background_color":"#f7f9fd","theme_color":"#f7f9fd","icons":[{"src":"/assets/flexkas-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"},{"src":"/assets/flexbox-original.png","sizes":"2000x2000","type":"image/png","purpose":"any"}]}
+{
+  "id": "/",
+  "name": "FlexKas — Kas Tim Flexbox",
+  "short_name": "FlexKas",
+  "description": "Satu tim, satu kas. Aplikasi kas tim Flexbox.",
+  "lang": "id",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f9fd",
+  "theme_color": "#f7f9fd",
+  "icons": [
+    {
+      "type": "image/svg+xml",
+      "src": "/assets/flexkas-icon.svg",
+      "purpose": "any",
+      "sizes": "any"
+    },
+    {
+      "type": "image/png",
+      "src": "/assets/flexkas-icon-192.png",
+      "purpose": "any",
+      "sizes": "192x192"
+    },
+    {
+      "type": "image/png",
+      "src": "/assets/flexkas-icon-512.png",
+      "purpose": "any",
+      "sizes": "512x512"
+    }
+  ]
+}

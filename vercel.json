@@ -1,1 +1,78 @@
-{"buildCommand":"npm run build","outputDirectory":"dist","headers":[{"source":"/sw.js","headers":[{"key":"Cache-Control","value":"no-cache, no-store, must-revalidate"}]},{"source":"/","headers":[{"key":"Cache-Control","value":"no-cache"}]}]}
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        {
+          "value": "no-cache",
+          "key": "Cache-Control"
+        }
+      ]
+    },
+    {
+      "source": "/assets/flexkas-logo.svg",
+      "headers": [
+        {
+          "value": "no-cache",
+          "key": "Cache-Control"
+        }
+      ]
+    },
+    {
+      "source": "/assets/flexkas-icon.svg",
+      "headers": [
+        {
+          "value": "no-cache",
+          "key": "Cache-Control"
+        }
+      ]
+    },
+    {
+      "source": "/assets/flexkas-icon-180.png",
+      "headers": [
+        {
+          "value": "no-cache",
+          "key": "Cache-Control"
+        }
+      ]
+    },
+    {
+      "source": "/assets/flexkas-icon-192.png",
+      "headers": [
+        {
+          "value": "no-cache",
+          "key": "Cache-Control"
+        }
+      ]
+    },
+    {
+      "source": "/assets/flexkas-icon-512.png",
+      "headers": [
+        {
+          "value": "no-cache",
+          "key": "Cache-Control"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # FlexKas — aplikasi kas tim Flexbox
 
-Tampilan aplikasi mobile seperti SakuPintar: satu kolom, logo FlexKas, kartu saldo, tombol pemasukan/pengeluaran, dan navigasi bawah. Saat dibuka lewat laptop, aplikasi tetap memakai lebar mobile maksimal 480px.
+Tampilan responsif: HP memakai satu kolom dan navigasi bawah seperti SakuPintar; tablet memakai ruang lebih lebar; desktop mulai 1000px memakai sidebar, ringkasan tiga kolom, grafik arus kas, panel iuran, dan tabel transaksi.
 
 ## Menjalankan di Visual Studio Code
 
@@ -16,7 +16,7 @@ Tampilan aplikasi mobile seperti SakuPintar: satu kolom, logo FlexKas, kartu sal
 - Pembayaran iuran otomatis masuk ke buku kas dan status anggota.
 - Filter bulan, pencarian, laporan arus kas/kategori, ekspor CSV dan cetak.
 - Cadangan JSON melalui panel informasi tim.
-- Logo SVG FlexKas berdasarkan logo Flexbox yang diberikan pemilik.
+- Logo SVG dompet, uang rupiah, dan aksen koin emas, dengan simbol Flexbox asli tetap di bagian depan. Ikon PNG 180/192/512px dibuat dari SVG untuk iPhone dan Android.
 - PWA dengan manifest, petunjuk pemasangan Android/iPhone, dan shell offline pada build produksi.
 
 ## Build dan Vercel
@@ -34,10 +34,11 @@ Pemasangan PWA tidak membuat file APK. Untuk dipakai bersama secara nyata, tahap
 ## Susunan proyek
 
 - `src/main.js`: halaman dan alur pencatatan kas.
-- `src/styles.css`: tampilan mobile untuk seluruh ukuran layar.
+- `src/styles.css`: tata letak HP, tablet, dan desktop.
 - `public/assets/`: logo FlexKas dan logo Flexbox asli.
 - `public/manifest.webmanifest`: identitas aplikasi di layar utama.
-- `scripts/build-sw.mjs`: membuat cache shell offline setelah build.
+- `scripts/build-icons.mjs`: membuat ikon PNG dari logo SVG; jalankan `npm run icons` jika mengubah logo.
+- `scripts/build-sw.mjs`: membuat shell offline; logo dan manifest dicari dari jaringan terlebih dahulu agar pembaruan tidak tertahan cache. Pada mode development, cache service worker FlexKas lama dilepas.
 
 Proyek ini terpisah dari SakuPintar dan pratinjau Sites sebelumnya. Repository tujuan: https://github.com/adityanurarif9-ai/FlexKas.git
 
