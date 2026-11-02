@@ -1,3 +1,4 @@
+import { teamRole } from './team.js';
 const text = value => String(value ?? '').trim();
 const key = value => text(value).toLocaleLowerCase('id-ID');
 const positiveInteger = n => Number.isSafeInteger(n) && n > 0;
@@ -29,7 +30,7 @@ export function parseCashWorkbook(kas, payments) {
   for (let r = 11; r <= 15; r++) {
     const name = text(kas[`B${r}`]);
     if (!name || members.some(m => key(m.name) === key(name))) throw new Error('Daftar anggota kosong atau berulang di Kas Tim.');
-    members.push({ id: `excel-member-${r}`, name, role: 'Anggota' });
+    members.push({ id: `excel-member-${r}`, name, role: teamRole(name) });
   }
   const periods = [];
   for (const [year, first, last] of [[2026, 27, 36], [2027, 49, 101]]) {
@@ -78,7 +79,7 @@ export function parseCashWorkbook(kas, payments) {
   if (opening + income - expense < 0) throw new Error('Saldo akhir negatif. Periksa pemasukan dan pengeluaran di Excel.');
   const selectedDuesPeriod = weekKey(Number(kas.E7), Number(kas.B7));
   if (!periods.some(p => p.id === selectedDuesPeriod)) throw new Error('Periode terpilih di Excel tidak valid.');
-  return { demo: false, monthlyDues: amount, weeklyDues: amount, duesFrequency: 'weekly', openingBalance: opening,
+  return { demo: false, teamRosterVersion: 1, monthlyDues: amount, weeklyDues: amount, duesFrequency: 'weekly', openingBalance: opening,
     duesPeriods: periods, selectedDuesPeriod, members, transactions,
     importSummary: { income, expense, balance: opening + income - expense, source: 'Kas Tim / Catatan Pembayaran' } };
 }

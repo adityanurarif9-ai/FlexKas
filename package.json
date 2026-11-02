@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1 --port 5194 --strictPort",
     "build": "vite build && node scripts/build-sw.mjs",
     "preview": "vite preview --host 127.0.0.1 --port 5194 --strictPort",
-    "test": "node --test tests/cash-import.mjs"
+    "test": "node --test tests/cash-import.mjs tests/team.mjs"
   },
   "devDependencies": {
     "vite": "^7.1.0"

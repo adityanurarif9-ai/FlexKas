@@ -27,7 +27,7 @@ Impor repo `adityanurarif9-ai/FlexKas` ke Vercel. Framework: Vite; build: `npm r
 
 ## Batas versi ini
 
-Ini aplikasi frontend JavaScript dengan Vite. Data masih di localStorage perangkat, belum memakai akun atau database tim. Peran anggota adalah keterangan, bukan izin akses. Data awal adalah contoh dan dapat dikosongkan melalui tombol Mulai kas. Ekspor sebelum membersihkan data browser. Cadangan JSON untuk arsip; impor belum tersedia. Target iuran global berlaku untuk seluruh periode.
+Ini aplikasi frontend JavaScript dengan Vite. Data masih di localStorage perangkat, belum memakai akun atau database tim. Peran anggota adalah keterangan, bukan izin akses. Data awal berisi Adit (Leader), Rainer (Wakil Leader), Kiandra dan Bima (Anggota), serta Fakhri (Bendahara), dengan saldo nol. Riwayat keuangan harus diimpor dari Excel pada setiap browser/perangkat. Ekspor sebelum membersihkan data browser. Cadangan JSON untuk arsip; impor belum tersedia. Target iuran global berlaku untuk seluruh periode.
 
 Pemasangan PWA tidak membuat file APK. Untuk dipakai bersama secara nyata, tahap berikutnya adalah akun pengguna, otorisasi bendahara/admin, dan database dengan pembatasan akses per tim.
 
