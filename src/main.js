@@ -1,3 +1,5 @@
+import {recentAlarmRows} from './alarm-audio.js';
+import {unlockReminderSound,showReminderAlarm,dismissReminderAlarm,reconcileReminderAlarm} from './reminder-alarm.js';
 import {notificationView} from './notification-view.js';
 import {visibleNotifications} from './notification-policy.js';
 import {notificationStore} from './notification-store.js';
@@ -7,7 +9,7 @@ import {openDuesPayment} from './dues-payment-ui.js';
 import {cloud,cloudConfigured,signIn,readSnapshot,writeSnapshot,changePassword,authMessage,apiRequest} from './cloud.js';
 import {canManage,memberDues,duesForPeriod} from './account-policy.js';
 import {showLogin,showLoading} from './auth-ui.js';
-import {enablePush,disablePush,testPush,sendReminders,pushState,unlockReminderSound,playReminderSound} from './push-client.js';
+import {enablePush,disablePush,testPush,sendReminders,pushState} from './push-client.js';
 const inbox={userId:null,rows:[],prefs:null,loading:false,error:'',timer:null};
 const runtime={profile:null,session:null,loading:true,busy:false,revision:0,updatedAt:null,error:'',generation:0};
 import { createInstallExperience } from './install-experience.js';
@@ -15,6 +17,7 @@ let installExperience=null;
 import './styles.css';
 import './annual-payment.css';
 import './notifications.css';
+import './reminder-alarm.css';
 import { initialTeam,applyTeamRoles,teamRole } from './team.js';
 import { cashBalance, chooseWeek, paidForMember, weeklyTarget, readCashWorkbook } from './cash-import.js';
 const $=(s,r=document)=>r.querySelector(s);
@@ -97,9 +100,9 @@ function ensureAdmin(){if(canEdit())return true;toast('Akunmu hanya dapat meliha
 function applySnapshot(snapshot){runtime.profile={...snapshot.profile,display_role:teamRole(snapshot.profile.member_key)};runtime.revision=Number(snapshot.revision);runtime.updatedAt=snapshot.updated_at;state=applyTeamRoles(snapshot.state);duesWeek=chooseWeek(state,today);if(inbox.userId!==runtime.profile.user_id){inbox.userId=runtime.profile.user_id;inbox.rows=[];inbox.error='';inbox.loading=false;inbox.prefs=notificationStore(inbox.userId)}clearPaidAlerts()}
 function renderAuth(){if(runtime.loading){showLoading($('#app'));return}showLogin($('#app'),{configured:cloudConfigured,error:runtime.error,onInstall:installApp,onRetry:cloudConfigured?()=>bootAccounts():null,onSubmit:async(email,password)=>{try{const session=await signIn(email,password);await connectSession(session)}catch(error){throw new Error(authMessage(error))}}})}
 async function connectSession(session){
-  if(!session){runtime.generation++;runtime.session=null;runtime.profile=null;runtime.loading=false;state=initialTeam();inbox.userId=null;inbox.rows=[];inbox.prefs=null;inbox.error='';inbox.loading=false;clearTimeout(toastTimer);$('#toast').textContent='';$('#toast').classList.remove('show');closeModal();render();return}
+  if(!session){dismissReminderAlarm();runtime.generation++;runtime.session=null;runtime.profile=null;runtime.loading=false;state=initialTeam();inbox.userId=null;inbox.rows=[];inbox.prefs=null;inbox.error='';inbox.loading=false;clearTimeout(toastTimer);$('#toast').textContent='';$('#toast').classList.remove('show');closeModal();render();return}
   if(runtime.profile&&runtime.session?.user.id===session.user.id){runtime.session=session;return}
-  const generation=++runtime.generation;runtime.session=session;runtime.profile=null;state=initialTeam();runtime.loading=true;runtime.error='';closeModal();render();
+  dismissReminderAlarm();const generation=++runtime.generation;runtime.session=session;runtime.profile=null;state=initialTeam();runtime.loading=true;runtime.error='';closeModal();render();
   try{const snapshot=await readSnapshot();if(generation!==runtime.generation)return;applySnapshot(snapshot);runtime.loading=false;render();refreshNotifications()}
   catch(error){if(generation!==runtime.generation)return;runtime.loading=false;runtime.profile=null;runtime.error=authMessage(error);render();throw error}
 }
@@ -117,7 +120,7 @@ async function refreshCloud(force=false){
   const generation=runtime.generation;try{const snapshot=await readSnapshot();if(generation!==runtime.generation||runtime.busy)return;applySnapshot(snapshot);if(!document.querySelector('.modal'))render();await refreshNotifications();if(force)toast('Kas sudah diperbarui dari server.')}
   catch(error){if(force)toast(authMessage(error))}
 }
-async function logoutAccount(){try{await disablePush(cloud)}catch{}const {error}=await cloud.auth.signOut();if(error){toast(authMessage(error));return}await connectSession(null)}
+async function logoutAccount(){dismissReminderAlarm();try{await disablePush(cloud)}catch{}const {error}=await cloud.auth.signOut();if(error){toast(authMessage(error));return}await connectSession(null)}
 function syncNote(){return `<div class="demo-note cloud-note"><span>${icon('shield')} Kas bersama · ${canEdit()?'Fakhri dapat mengelola catatan':'Akunmu hanya dapat melihat'}${runtime.updatedAt?` · Diperbarui ${new Date(runtime.updatedAt).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}`:''}</span><button id="refresh-cloud">Muat ulang</button>${canEdit()?'<button id="open-import">Impor Excel</button>':''}</div>`}
 function personalCard(){
   if(canEdit())return '';
@@ -169,7 +172,10 @@ async function refreshNotifications(force=false){
     const rows=visibleNotifications(result.notifications,state,runtime.profile),changed=JSON.stringify(rows)!==JSON.stringify(inbox.rows)||!!inbox.error;
     inbox.rows=rows;inbox.error='';inbox.loading=false;
     const newRows=inbox.prefs.newUnread(rows);
-    if(newRows.length&&playReminderSound(runtime.profile,true))inbox.prefs.markAnnounced(newRows.map(row=>row.id));
+    reconcileReminderAlarm(rows,runtime.profile);
+    const now=Date.parse(result.serverTime)||Date.now(),fresh=recentAlarmRows(newRows,now),oldIds=newRows.filter(row=>!fresh.includes(row)).map(row=>row.id);
+    inbox.prefs.markAnnounced(oldIds);
+    if(fresh.length&&showReminderAlarm(fresh,runtime.profile,()=>{closeModal();openNotifications()},{now}))inbox.prefs.markAnnounced(fresh.map(row=>row.id));
     if((changed||force)&&page==='notifications'&&!document.querySelector('.modal'))render();else updateNotificationBadge();
   }catch(error){if(generation!==runtime.generation||userId!==runtime.profile?.user_id)return;inbox.loading=false;inbox.error=error.message;if(page==='notifications'&&!document.querySelector('.modal'))render()}
 }
@@ -181,6 +187,7 @@ function bindNotificationControls(){
   $('#allow-device-notifications')?.addEventListener('click',async event=>{const button=event.currentTarget;button.disabled=true;try{await enablePush(cloud,runtime.profile);toast('Perangkat ini siap menerima notifikasi dari Fakhri.');render()}catch(error){toast(error.message);button.disabled=false}});
 }
 function clearPaidAlerts(){
+  reconcileReminderAlarm(currentNotifications(),runtime.profile);
   if(!runtime.profile||!navigator.serviceWorker?.controller)return;
   const periodIds=(state.duesPeriods||[]).filter(period=>duesForPeriod(state,runtime.profile,period.id)?.remaining===0).map(period=>period.id);
   if(periodIds.length)navigator.serviceWorker.controller.postMessage({type:'FLEXKAS_CLEAR_PAID',userId:runtime.profile.user_id,periodIds});

@@ -19,7 +19,7 @@ export async function listNotifications(db,profile){
     db.from('flex_push_test_limits').select('user_id,last_test_at').eq('user_id',profile.user_id).maybeSingle()
   ]);
   if(wallet.error||deliveries.error||test.error)throw new Error('Kotak notifikasi belum dapat dimuat.');
-  return {notifications:inboxFromHistory(wallet.data.state,profile,deliveries.data,test.data),date:jakartaDate()};
+  return {notifications:inboxFromHistory(wallet.data.state,profile,deliveries.data,test.data),date:jakartaDate(),serverTime:new Date().toISOString()};
 }
 export async function sendTestReminder(db,actor,memberKey,{deliver=sendToSubscriptions}={}){
   requireReminderAdmin(actor);

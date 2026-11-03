@@ -30,17 +30,3 @@ export async function disablePush(client){
 export const testPush=memberKey=>apiRequest('/api/push-test','POST',memberKey?{memberKey}:{});
 export const sendReminders=(memberKey,periodId)=>apiRequest('/api/reminders','POST',{...(memberKey?{memberKey}:{}),...(periodId?{periodId}:{})});
 export function pushState(profile){return typeof Notification!=='undefined'&&Notification.permission==='granted'&&boundUser()===profile?.user_id}
-
-let audio=null,lastTone=0;
-function soundPreference(profile){return profile?.access_role==='viewer'}
-export function unlockReminderSound(profile){
-  if(!soundPreference(profile))return;
-  const Context=window.AudioContext||window.webkitAudioContext;
-  if(Context){audio ||= new Context();audio.resume().catch(()=>{})}
-}
-export function playReminderSound(profile,force=false){
-  if(!profile||profile.access_role!=='viewer'||!soundPreference(profile)||!audio||audio.state!=='running'||document.visibilityState!=='visible'||(!force&&Date.now()-lastTone<30*60*1000))return false;
-  lastTone=Date.now();
-  for(let i=0;i<3;i++){const start=audio.currentTime+i*.35,osc=audio.createOscillator(),gain=audio.createGain();osc.type='sine';osc.frequency.value=i===1?740:554;gain.gain.setValueAtTime(0,start);gain.gain.linearRampToValueAtTime(.12,start+.03);gain.gain.exponentialRampToValueAtTime(.001,start+.22);osc.connect(gain);gain.connect(audio.destination);osc.start(start);osc.stop(start+.25)}
-  return true;
-}

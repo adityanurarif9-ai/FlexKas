@@ -82,3 +82,11 @@ Alamat produksi: https://kas-flexbox.vercel.app/. Pemasangan tetap memerlukan HT
 - Riwayat pengingat yang sudah ada (`flex_reminder_deliveries`) menjadi sumber pesan biasa; `sent` berarti tersimpan di kotak masuk, bukan jaminan HP membunyikannya. Pesan tetap tersedia tanpa langganan push. API mengembalikan jumlah perangkat yang benar-benar menerima pengiriman secara terpisah. Tes terakhir berasal dari waktu pada `flex_push_test_limits`. Tidak perlu tabel, migrasi, atau kunci baru.
 - Setelah minggu terkait lunas, pesan biasa dan badge disaring di server dan aplikasi. Notifikasi sistem yang masih tampil dapat ditutup oleh aplikasi saat status pembayaran akun tersebut tersinkron. Pesan tes tetap ditampilkan untuk pengecekan.
 - Akun penglihat tidak memiliki kontrol pengiriman, tes, atau jadwal pengingat. Mereka hanya menerima pesan dan memberi **izin notifikasi pada perangkatnya sendiri** melalui halaman Notifikasi. Izin HP tidak dapat diberikan oleh Fakhri dari jarak jauh. Suara singkat dalam aplikasi berjalan saat ada pesan baru yang belum dibaca dan setelah interaksi pengguna; suara ketika aplikasi tertutup mengikuti pengaturan HP. Tidak ada alarm jam yang dijamin berbunyi.
+
+## Alarm saat pengingat diterima
+
+Ketika anggota sedang membuka FlexKas dan pengingat baru dari Fakhri diterima, panel alarm tampil dengan bunyi dua nada berulang selama maksimal 12 detik. Penerima dapat menekan Hentikan alarm atau Lihat notifikasi. Jika browser belum mengizinkan audio otomatis, panel menyediakan Bunyikan alarm yang dapat diketuk langsung. Fakhri tidak dapat memaksa izin audio atau volume pada perangkat orang lain.
+
+Alarm hanya diputar untuk pesan baru dengan waktu penerimaan maksimal dua menit, menggunakan waktu server agar jam perangkat tidak mengubah penilaian. Pesan lama tetap dapat dibaca tanpa membunyikan alarm saat login. Pesan yang sudah diumumkan tidak membunyikan alarm ulang. Alarm berhenti ketika aplikasi disembunyikan, akun keluar/berganti, atau pengingat biasa tidak relevan lagi karena minggu tersebut lunas. Pesan Tes tetap boleh memicu alarm meskipun lunas.
+
+Saat aplikasi tertutup, push memakai suara notifikasi bawaan perangkat; bunyi alarm 12 detik hanya dijalankan dalam aplikasi yang terbuka. Tidak ada perubahan data kas, hak akses, schema database, atau kunci konfigurasi untuk pembaruan ini.

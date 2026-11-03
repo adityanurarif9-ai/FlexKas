@@ -120,3 +120,6 @@ Referensi: [Supabase admin createUser](https://supabase.com/docs/reference/javas
 
 
 Pembaruan kotak Notifikasi: tidak perlu mengulang SQL atau mengganti kunci. Pesan biasa dibaca dari riwayat pengingat yang sudah tersedia dan disembunyikan setelah minggu terkait lunas. Status `sent` kini berarti pesan tersimpan di kotak masuk; keberhasilan push ke perangkat dihitung terpisah. Anggota tanpa izin push tetap dapat membaca kotak masuk. Pesan uji terakhir tetap tampil meskipun lunas. Penglihat tidak dapat mengirim atau mengatur pengingat; izin notifikasi perangkat diberikan sendiri lewat halaman Notifikasi.
+
+
+Alarm penerima: minta Fakhri menekan Ingatkan pada anggota belum lunas, atau Tes pengingat untuk pengecekan meskipun sudah lunas. Saat penerima membuka FlexKas, pengingat baru menampilkan panel alarm dan bunyi berulang maksimal 12 detik. Tekan Hentikan alarm untuk mengakhiri lebih cepat. Jika muncul Bunyikan alarm, ketuk agar browser mengizinkan audio. Pengingat lama tidak membunyikan alarm ulang ketika login. Push pada aplikasi tertutup memakai suara notifikasi HP, sesuai izin dan pengaturan perangkat. Tidak perlu SQL, key, atau impor environment tambahan.
